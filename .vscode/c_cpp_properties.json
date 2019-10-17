@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/eigen3",
+                "/usr/include/mrpt/base/include",
+                "/usr/include/mrpt/opengl/include",
+                "/usr/include/mrpt/gui/include",
+                "/home/fqy/dependency/OpenCV330/include/",
+                "/usr/include/openni2",
+                "/usr/include/pcl-1.7/",
+                "/opt/ros/kinetic/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

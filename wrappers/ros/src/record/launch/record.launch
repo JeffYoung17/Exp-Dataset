@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="record_node" pkg="record" type="record_node" output="screen" />
+
+</launch>
