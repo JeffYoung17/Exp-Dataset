@@ -25,7 +25,7 @@
 
 using namespace std;
 
-string save_dir = "/home/fqy/data/zjuData/";
+string save_dir;
 
 vector<int> compression_params;
 
@@ -33,7 +33,6 @@ queue<pair<double, cv::Mat>> rgb_buf;
 queue<pair<double, cv::Mat>> depth_buf;
 std::mutex buf_mutex;
 
-// callback of camera, saved as image
 void image_callback(const sensor_msgs::ImageConstPtr &img_msg)
 {
     ROS_INFO("Rx img!");
@@ -71,6 +70,14 @@ void save_rgb() {
             // cv::imshow("rgb image", img.second);
             // string test = save_dir + "rgb/" + f_str + ".png";
             // std::cout << test << std::endl;
+            
+            std::ofstream foutRGB(save_dir + "rgb.txt", std::ios::app);
+            foutRGB.setf(std::ios::fixed, std::ios::floatfield);
+            foutRGB.precision(6);
+            string name = "rgb/" + f_str + ".png";
+            foutRGB << f_str << " " << name << '\n';
+            foutRGB.close();
+
             if (cv::imwrite(save_dir + "rgb/" + f_str + ".png", img.second, compression_params))
                 ROS_INFO("Save img!");
             rgb_buf.pop();
@@ -91,6 +98,14 @@ void save_depth() {
             auto depth = depth_buf.front();
             string f_str = to_string(depth.first);
             // cv::imshow("depth image", depth.second);
+            
+            std::ofstream foutDep(save_dir + "depth.txt", std::ios::app);
+            foutDep.setf(std::ios::fixed, std::ios::floatfield);
+            foutDep.precision(6);
+            string name = "depth/" + f_str + ".png";
+            foutDep << f_str << " " << name << '\n';
+            foutDep.close();            
+
             if (cv::imwrite(save_dir + "depth/" + f_str + ".png", depth.second, compression_params))
                 ROS_INFO("Save depth!");
             depth_buf.pop();
@@ -130,6 +145,9 @@ int main(int argc, char** argv)
     compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(0);
 
+    save_dir = std::string(argv[1]);
+    std::cout << "save dir is: " << save_dir << '\n';
+    
     std::thread rgb_thread(save_rgb);
     rgb_thread.detach();
     std::thread depth_thread(save_depth);
