@@ -132,14 +132,28 @@ void ekf_callback(const geometry_msgs::PoseWithCovarianceStampedConstPtr &ekf_ms
     return ;
 }
 
+void odom_callback(const nav_msgs::OdometryConstPtr &odom_msg) {
+    ROS_INFO("Rx odom msg!");
+    std::ofstream foutOdom(save_dir + "odometry.txt", std::ios::app);
+    foutOdom.setf(std::ios::fixed, std::ios::floatfield);
+    foutOdom.precision(6);
+    foutOdom << odom_msg->header.stamp.toSec() << " "
+            << odom_msg->pose.pose.position.x << " " << odom_msg->pose.pose.position.y << " " << odom_msg->pose.pose.position.z << " "
+            << odom_msg->pose.pose.orientation.x << " " << odom_msg->pose.pose.orientation.y << " " << odom_msg->pose.pose.orientation.z << " " << odom_msg->pose.pose.orientation.w
+            << '\n';
+    foutOdom.close();
+    return ;
+}
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "record_node");
     ros::NodeHandle nh("~");
     ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
-    ros::Subscriber sub_depth = nh.subscribe("/mynteye/depth/image_raw", 200, depth_callback); // save depth img
-    ros::Subscriber sub_image = nh.subscribe("/mynteye/left/image_color", 200, image_callback); // save color img
-    ros::Subscriber sub_pose = nh.subscribe("/robot_pose_ekf/odom_combined", 200, ekf_callback); // save groundtruth
+    ros::Subscriber sub_depth = nh.subscribe("/mynteye/depth/image_raw", 500, depth_callback); // save depth img
+    ros::Subscriber sub_image = nh.subscribe("/mynteye/left/image_color", 500, image_callback); // save color img
+    ros::Subscriber sub_pose = nh.subscribe("/robot_pose_ekf/odom_combined", 1000, ekf_callback); // save groundtruth
+    ros::Subscriber sub_odom = nh.subscribe("/base/odom", 1000, odom_callback); // save wheel odometry
 
     ROS_INFO("Sub Finish!");
     compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);

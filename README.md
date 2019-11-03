@@ -2,9 +2,18 @@
 
 录制数据集的代码  
 
+## 1. 小觅相机深度版使用
 
-## ros话题的消息格式和编码类型
+### sdk编译
+```shell
+# 1. ROS Wrapper 安装
+make init
+make ros
+# 2. 修改mynteye_wrapper_nodelet.cc, 使得深度图topic发布的为滤波后的数据
+# 3. 设置launch文件, 配置相机参数
+```
 
+### ros话题的消息格式和编码类型
 ```shell
 topic: /mynteye/left/image_color
 	type: sensor_msgs/Image
@@ -17,16 +26,15 @@ topic: /mynteye/depth/image_raw
 	encoding: "mono16"
 ```
 
-## 录数据流程
-
+## 2. 录数据流程
 ```shell
-# 0. 上电开机, 测试遥控控制是否正常, 确保保存数据的文件夹都存在
+# 0. 上电开机, 测试遥控控制是否正常, 确保保存数据的文件夹已经创建
 # lsusb
 
-# 1. 启动接收IMU和编码器, 发布odom话题, 不广播tf(odom坐标系到base_footprint系)
+# 1. 启动接收IMU和编码器, 发布odom坐标系到base_footprint坐标系的odom话题,但是不广播二者间的TF.
 # TF: 
 # (1) map -> odom -> mynteye_link_frame -> ...
-# (2) odom_combined -> base_footprint -> base_link
+# (2) odom -> base_footprint
 roslaunch robot_odom core.launch
 
 # 2. 启动相机, 发布图像话题
@@ -50,7 +58,6 @@ roslaunch record record.launch
 ```
 
 ## 结果比较
-
 ```shell
 
 ```
