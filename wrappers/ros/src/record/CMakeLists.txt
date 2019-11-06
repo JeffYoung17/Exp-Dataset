@@ -66,6 +66,11 @@ include_directories(
 add_executable(record_node
   src/record.cc 
 )
+
+add_executable(direct_record_node
+  src/direct_record.cc
+)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -81,6 +86,11 @@ add_executable(record_node
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(record_node
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+)
+
+target_link_libraries(direct_record_node
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
 )
